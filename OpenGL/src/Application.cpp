@@ -12,6 +12,9 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 
 int main(void)
@@ -41,11 +44,20 @@ int main(void)
     if (glewInit() != GLEW_OK)
         std::cout << "Error" << std::endl;
 
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    const char* glsl_version = "#version 330";
+    ImGui_ImplOpenGL3_Init(glsl_version);
+
     float positions[] =
     {
-            100.0f, 100.0f, 0.0f, 0.0f, // 0
+            100.0f, 100.0f, 0.0f, 0.0f,  // 0
             200.0f, 100.0f, 1.0f, 0.0f,  // 1
-            200.0f, 200.0f, 1.0f, 1.0f,    // 2
+            200.0f, 200.0f, 1.0f, 1.0f,  // 2
             100.0f, 200.0f, 0.0f, 1.0f   // 3
     };
 
@@ -77,44 +89,44 @@ int main(void)
 
     glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
     glm::mat4 view = glm::translate(glm::mat4(1), glm::vec3(-100, 0, 0));
-    glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(200, 200, 0));
-    model = glm::scale(model, glm::vec3(2.0f, 0.5f, 1.0f));
-
-    glm::mat4 mvp = projection * view * model;
-;
-
-    shader.SetUniformMat4f("u_MVP", mvp);
 
     va.Unbind();
     shader.Unbind();
 
     Renderer renderer;
 
-    GlCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
-
-    float r = 0.0f;
-    float increment = 0.05f;
-
+    glm::vec3 translation(100, 0, 0);
     /* loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
     {
-        /* render here */
-        shader.Bind();
-        //shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-
         renderer.Clear();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        shader.Bind();
         vb.Bind();
         ib.Bind();
 
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
+
+        glm::mat4 mvp = projection * view * model;
+
+        shader.SetUniformMat4f("u_MVP", mvp);
+
         renderer.Draw(shader, ib, va);
 
-        if (r > 1.0f) {
-            increment = -0.05f;
+        {
+            ImGui::Begin("Hello, world!");
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::SliderFloat("Translation", &translation.x, 0.0f, 640.0f);
+            ImGui::End();
         }
-        else if (r < 0.0f) {
-            increment = 0.05f;
-        }
-        r += increment;
+
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         /* swap front and back buffers */
         glfwSwapBuffers(window);
