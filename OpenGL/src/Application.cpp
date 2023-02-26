@@ -10,6 +10,8 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
+#include <glm/gtc/type_ptr.hpp>
+
 
 
 int main(void)
@@ -41,10 +43,10 @@ int main(void)
 
     float positions[] =
     {
-            -0.5f, -0.5f, 0.0f, 0.0f, // 0
-            0.5f, -0.5f, 1.0f, 0.0f,  // 1
-            0.5f, 0.5f, 1.0f, 1.0f,    // 2
-            -0.5f, 0.5f, 0.0f, 1.0f   // 3
+            100.0f, 100.0f, 0.0f, 0.0f, // 0
+            200.0f, 100.0f, 1.0f, 0.0f,  // 1
+            200.0f, 200.0f, 1.0f, 1.0f,    // 2
+            100.0f, 200.0f, 0.0f, 1.0f   // 3
     };
 
     unsigned int indices[] =
@@ -72,6 +74,16 @@ int main(void)
     Texture texture("res/textures/Test.png");
     texture.Bind(0);
     shader.SetUniform1i("u_Texture", 0);
+
+    glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
+    glm::mat4 view = glm::translate(glm::mat4(1), glm::vec3(-100, 0, 0));
+    glm::mat4 model = glm::translate(glm::mat4(1), glm::vec3(200, 200, 0));
+    model = glm::scale(model, glm::vec3(2.0f, 0.5f, 1.0f));
+
+    glm::mat4 mvp = projection * view * model;
+;
+
+    shader.SetUniformMat4f("u_MVP", mvp);
 
     va.Unbind();
     shader.Unbind();
