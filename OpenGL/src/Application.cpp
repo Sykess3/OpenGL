@@ -15,6 +15,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "test/TestClearColor.h"
 
 
 int main(void)
@@ -53,87 +54,58 @@ int main(void)
     const char* glsl_version = "#version 330";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    float positions[] =
-    {
-            100.0f, 100.0f, 0.0f, 0.0f,  // 0
-            200.0f, 100.0f, 1.0f, 0.0f,  // 1
-            200.0f, 200.0f, 1.0f, 1.0f,  // 2
-            100.0f, 200.0f, 0.0f, 1.0f   // 3
-    };
-
-    unsigned int indices[] =
-    {
-        0, 1, 2,
-        2, 3, 0
-    };
-
     GlCall(glEnable(GL_BLEND));
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-
-	const VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-    const IndexBuffer ib(indices, 6);
-    VertexBufferLayout layout;
-    layout.Push<float>(2);
-    layout.Push<float>(2);
-    VertexArray va;
-    va.AddBuffer(vb, layout);
-
-    Shader shader("res/shaders/Basic.shader");
-    shader.Bind();
-    //shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-
-    Texture texture("res/textures/Test.png");
-    texture.Bind(0);
-    shader.SetUniform1i("u_Texture", 0);
-
-    glm::mat4 projection = glm::ortho(0.0f, 640.0f, 0.0f, 480.0f, -1.0f, 1.0f);
-    glm::mat4 view = glm::translate(glm::mat4(1), glm::vec3(-100, 0, 0));
-
-    va.Unbind();
-    shader.Unbind();
-
     Renderer renderer;
 
-    glm::vec3 translation(100, 0, 0);
-    /* loop until the user closes the window */
+    test::Test* currentTestPointer;
+    auto* testMenu = new test::TestMenu(currentTestPointer);
+    currentTestPointer = testMenu;
+
+    testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+
     while (!glfwWindowShouldClose(window))
     {
+        glClearColor(0, 0, 0, 1);
         renderer.Clear();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        shader.Bind();
-        vb.Bind();
-        ib.Bind();
-
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-
-        glm::mat4 mvp = projection * view * model;
-
-        shader.SetUniformMat4f("u_MVP", mvp);
-
-        renderer.Draw(shader, ib, va);
-
+        if (currentTestPointer)
         {
-            ImGui::Begin("Hello, world!");
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::SliderFloat("Translation", &translation.x, 0.0f, 640.0f);
+            currentTestPointer->OnUpdate(0);
+            currentTestPointer->OnRender();
+
+            ImGui::Begin("Test");
+            if (currentTestPointer != testMenu && ImGui::Button("<-"))
+            {
+                delete currentTestPointer;
+                currentTestPointer = testMenu;
+            }
+
+            currentTestPointer->OnImGuiRender();
             ImGui::End();
         }
+
 
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-        /* swap front and back buffers */
         glfwSwapBuffers(window);
 
-        /* poll for and process events */
 		glfwPollEvents();
     }
+
+    if (currentTestPointer != testMenu)
+    {
+        delete testMenu;
+    }
+
+    delete currentTestPointer;
 
     glfwTerminate();
     return 0;
