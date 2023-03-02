@@ -12,9 +12,11 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Constant.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "test/Test3DCube.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
 
@@ -31,7 +33,7 @@ int main(void)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(960, 720, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(Constant::Width, Constant::Height, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -66,6 +68,7 @@ int main(void)
 
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
+    testMenu->RegisterTest<test::Test3DCube>("3d Cube");
 
     while (!glfwWindowShouldClose(window))
     {

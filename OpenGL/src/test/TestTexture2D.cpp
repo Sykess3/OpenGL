@@ -1,5 +1,6 @@
 #include "TestTexture2D.h"
 
+#include "Constant.h"
 #include "Renderer.h"
 #include "imgui/imgui.h"
 
@@ -9,15 +10,15 @@
 namespace test
 {
     TestTexture2D::TestTexture2D()
-        :m_Proj(glm::ortho(0.0f, 960.0f, 0.0f, 720.0f, -1.0f, 1.0f)),
-        m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-        m_TranslationA(glm::vec3(200, 200, 0)), m_TranslationB(glm::vec3(400, 200, 0))
+        :m_Proj(glm::perspective(glm::radians(45.0f), (float)Constant:: Width/ (float)Constant::Height, 0.1f, 300.0f)),
+        m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -100))),
+        m_TranslationA(glm::vec3(0, 0, 0))
     {
         float positions[] = {
-            -50.0f, -50.0f, 0.0f, 0.0f, // 0
-            50.0f, -50.0f, 1.0f, 0.0f,  // 1
-            50.0f, 50.0f, 1.0f, 1.0f,    // 2
-            -50.0f, 50.0f, 0.0f, 1.0f   // 3
+            -75.0f, -75.0f, 0.0f, 0.0f, // 0
+            75.0f, -75.0f, 1.0f, 0.0f,  // 1
+            75.0f, 75.0f, 1.0f, 1.0f,    // 2
+            -75.0f, 75.0f, 0.0f, 1.0f   // 3
         };
 
         unsigned int indices[] = {
@@ -30,7 +31,7 @@ namespace test
 
         m_VAO = std::make_unique<VertexArray>();
 
-        m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
+        m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 36 * 4 * sizeof(float));
         VertexBufferLayout layout;
         layout.Push<float>(2);
         layout.Push<float>(2);
@@ -42,7 +43,7 @@ namespace test
         m_Shader->Bind();
         m_Shader->SetUniform1i("u_Texture", 0);
 
-        m_Texture = std::make_unique<Texture>("res/textures/Test.png");
+        m_Texture = std::make_unique<Texture>("res/textures/Test2.png");
     }
 
     TestTexture2D::~TestTexture2D()
@@ -64,6 +65,7 @@ namespace test
 
         {
             glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+            model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
             glm::mat4 mvp = m_Proj * m_View * model;
 
             m_Shader->Bind();
@@ -71,21 +73,10 @@ namespace test
 
             renderer.Draw(*m_Shader ,*m_IndexBuffer, * m_VAO);
         }
-
-        {
-            glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
-            glm::mat4 mvp = m_Proj * m_View * model;
-
-            m_Shader->Bind();
-            m_Shader->SetUniformMat4f("u_MVP", mvp);
-
-            renderer.Draw(*m_Shader, *m_IndexBuffer, *m_VAO);
-        }
     }
 
     void TestTexture2D::OnImGuiRender()
     {
-        ImGui::SliderFloat3("m_TranslationA", &m_TranslationA.x, 0.0f, 960.0f);
-        ImGui::SliderFloat3("m_TranslationB", &m_TranslationB.x, 0.0f, 960.0f);
+        ImGui::SliderFloat3("m_TranslationA", &m_TranslationA.x, -100, 100);
     }
 }

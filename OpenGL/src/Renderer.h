@@ -22,5 +22,6 @@ class Renderer
 {
 public:
 	void Draw(const Shader& shader, const IndexBuffer& ib, const VertexArray& va);
+	void Draw(const Shader& shader, const VertexArray& va, unsigned int bufferElementsCount);
 	void Clear();
 };
