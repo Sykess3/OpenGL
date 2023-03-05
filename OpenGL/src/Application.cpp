@@ -16,6 +16,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
+#include "test/Test3DSurfaceBasedOnBezierCurves.h"
 #include "test/Test3DCube.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
@@ -69,6 +70,7 @@ int main(void)
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
     testMenu->RegisterTest<test::Test3DCube>("3d Cube");
+    testMenu->RegisterTest<test::Test3DSurfaceBasedOnBezierCurves>("LAB1");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -92,12 +94,11 @@ int main(void)
             }
 
             currentTestPointer->OnImGuiRender();
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
             ImGui::End();
         }
 
         ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); 
 
         glfwSwapBuffers(window);
 
