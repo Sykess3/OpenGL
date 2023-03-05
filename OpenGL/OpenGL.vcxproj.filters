@@ -75,7 +75,10 @@
     <ClCompile Include="src\test\Test3DCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\test\Test3DSurfaceBasedOnBezierCurves.cpp">
+    <ClCompile Include="src\test\bezierSurface\Test3DSurfaceBasedOnBezierCurves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\test\bezierSurface\BezierSurface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1404,10 +1407,13 @@
     <ClInclude Include="src\test\Test3DCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\test\Test3DSurfaceBasedOnBezierCurves.h">
+    <ClInclude Include="src\test\bezierSurface\Test3DSurfaceBasedOnBezierCurves.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\DataStructs.h">
+    <ClInclude Include="src\test\bezierSurface\DataStructs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\bezierSurface\BezierSurface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

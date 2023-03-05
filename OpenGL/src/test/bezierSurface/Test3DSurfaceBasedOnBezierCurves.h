@@ -1,10 +1,11 @@
 #pragma once
-#include "Test.h"
 #include "DataStructs.h"
 #include "memory"
 #include "Shader.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "BezierSurface.h"
+#include "test/Test.h"
 
 namespace test
 {
@@ -16,12 +17,12 @@ namespace test
 		glm::mat4 m_Proj, m_View;
 		glm::vec3 m_RotationAxis;
 		float m_RotationValue;
-		unsigned int m_PointsCount;
-
+		unsigned int m_VertexCount;
 		float m_LastGeneratedStep;
 
+		BezierSurface m_BezierSurface;
+
 		std::vector<Portion> m_Portions;
-		std::vector<Vertex> m_SurfacePoints;
 
 		std::unique_ptr<VertexBuffer> m_VBO;
 		std::unique_ptr<VertexArray> m_VAO;
@@ -36,10 +37,7 @@ namespace test
 
 	private:
 		void InitializePortion();
-		Vertex Bezier5(Vertex p0, Vertex p1, Vertex p2, Vertex p3, Vertex p4, float t);
-		Vertex Bezier3(Vertex p0, Vertex p1, Vertex p2, float t);
-		void GenerateSurfacePoints();
-		void GenerateArrayBuffer();
+		void InitializeRenderData();
 	};
 
 }

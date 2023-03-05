@@ -1,22 +1,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
-#include "IndexBuffer.h"
 #include "Renderer.h"
-#include "Shader.h"
 #include "Texture.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
-
-#include <glm/gtc/type_ptr.hpp>
-
 #include "Constant.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "test/Test3DSurfaceBasedOnBezierCurves.h"
+#include "test/bezierSurface/Test3DSurfaceBasedOnBezierCurves.h"
 #include "test/Test3DCube.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
