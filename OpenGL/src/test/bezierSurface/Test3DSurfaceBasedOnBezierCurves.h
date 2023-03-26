@@ -14,6 +14,8 @@ namespace test
 		float m_UVStep;
 		glm::mat4 m_Proj, m_View;
 		glm::vec3 m_RotationAxis;
+		glm::vec3 m_Translate;
+		glm::vec3 m_Scale;
 		float m_RotationValue;
 		float m_LastGeneratedStep;
 

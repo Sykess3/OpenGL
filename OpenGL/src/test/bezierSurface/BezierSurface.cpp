@@ -134,13 +134,14 @@ namespace test
 
 	std::tuple<glm::vec3, glm::vec3> BezierSurface::GetNormal(const Vertex& v1, const Vertex& v2, const Vertex& v3)
 	{
-		glm::vec3 start = v2.GetPosition();
-		glm::vec3 dir1 = v1.GetPosition() - start;
-		glm::vec3 dir2 = v3.GetPosition() - start;
+		glm::vec3 dir1 = v1.GetPosition() - v2.GetPosition();
+		glm::vec3 dir2 = v3.GetPosition() - v2.GetPosition();
 
 		glm::vec3 cross = glm::cross(dir1, dir2);
-		int length = cross.length();
-		glm::vec3 end = (cross * 5.0f) + start;
+		glm::vec3 normalized = glm::normalize(cross);
+		int length = normalized.length();
+		glm::vec3 start = glm::vec3((v1.x + v2.x + v3.x) / 3, (v1.y + v2.y + v3.y) / 3, (v1.z + v2.z + v3.z) / 3);
+		glm::vec3 end = (normalized * 0.05f) + start;
 
 		return std::make_tuple(start, end);
 	}
