@@ -306,6 +306,7 @@
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\test\bezierSurface\BezierSurface.h" />
+    <ClInclude Include="src\test\bezierSurface\LineRenderer.h" />
     <ClInclude Include="src\test\bezierSurface\RenderDataBuilder.h" />
     <ClInclude Include="src\test\bezierSurface\Test3DSurfaceBasedOnBezierCurves.h" />
     <ClInclude Include="src\test\Test.h" />

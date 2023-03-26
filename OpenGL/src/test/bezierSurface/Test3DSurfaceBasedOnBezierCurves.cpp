@@ -1,6 +1,7 @@
 #include "Test3DSurfaceBasedOnBezierCurves.h"
 
 #include "Constant.h"
+#include "LineRenderer.h"
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
 #include "imgui/imgui.h"
@@ -44,15 +45,21 @@ namespace test
 		{
 			glm::mat4 model = glm::rotate(glm::mat4(1.0f), glm::radians(m_RotationValue), m_RotationAxis);
 			glm::mat4 mvp = m_Proj * m_View * model;
-
+			m_Shader->SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
-
 			for(auto renderData : m_RenderData)
 			{
 				renderer.Draw(*m_Shader, *std::move(renderData->IBO), *std::move(renderData->VAO));
 			}
 		}
+
+		m_Shader->SetUniform4f("u_Color", 0.0f, 0.0f, 1.0f, 1.0f);
+		for(auto[start, end] : m_Normals)
+		{
+			LineRenderer::Draw(start,end);
+		}
+
 	}
 	void Test3DSurfaceBasedOnBezierCurves::OnImGuiRender()
 	{
@@ -63,7 +70,7 @@ namespace test
 
 	void Test3DSurfaceBasedOnBezierCurves::InitializeRenderData()
 	{
-		m_RenderData = m_BezierSurface.GetRenderData(m_Portions, m_UVStep);
+		m_RenderData = m_BezierSurface.GetRenderData(m_Portions, m_UVStep, m_Normals);
 
 		m_LastGeneratedStep = m_UVStep;
 	}
@@ -94,7 +101,7 @@ namespace test
 			cp3[4] = { -0.3f, -0.0f, -0.7f };
 			m_Portions.push_back({ cp1, cp2, cp3 });
 		}
-		{
+		/*{
 			std::array<Vertex, 5> cp1{};
 			std::array<Vertex, 5> cp2{};
 			std::array<Vertex, 5> cp3{};
@@ -117,7 +124,7 @@ namespace test
 			cp3[3] = { -0.3f, -0.4f, -0.7f };
 			cp3[4] = { -0.3f, 0.0f, -0.7f };
 			m_Portions.push_back({ cp1, cp2, cp3 });
-		}
+		}*/
 
 	}
 }

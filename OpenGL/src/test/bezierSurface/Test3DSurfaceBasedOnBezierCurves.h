@@ -22,6 +22,7 @@ namespace test
 		std::vector<Portion> m_Portions;
 
 		std::vector<std::shared_ptr<RenderData>> m_RenderData;
+		std::vector<std::tuple<glm::vec3, glm::vec3>> m_Normals;
 		std::unique_ptr<Shader> m_Shader;
 
 	public:

@@ -6,10 +6,11 @@
 
 namespace test
 {
-	std::vector<std::shared_ptr<RenderData>> BezierSurface::GetRenderData(const std::vector<Portion>& portions, float uvStep)
+	std::vector<std::shared_ptr<RenderData>> BezierSurface::GetRenderData(
+		const std::vector<Portion>& portions, float uvStep, std::vector<std::tuple<glm::vec3, glm::vec3>>& normalsOutput)
 	{
 		GenerateSurfaceVertexes(portions, uvStep);
-		return GenerateArrayBufferInternal();
+		return GenerateArrayBufferInternal(normalsOutput);
 	}
 
 	void BezierSurface::GenerateSurfaceVertexes(const std::vector<Portion>& portions, float uvStep)
@@ -72,10 +73,11 @@ namespace test
 		}
 	}
 
-	std::vector<std::shared_ptr<RenderData>> BezierSurface::GenerateArrayBufferInternal()
+	std::vector<std::shared_ptr<RenderData>> BezierSurface::GenerateArrayBufferInternal(std::vector<std::tuple<glm::vec3, glm::vec3>>& normalsOutput)
 	{
 		//int pointsCountInRowOrColumn = sqrt(m_SurfaceVertexes.size() / portionsCount);
 		RenderDataBuilder builder(m_SurfaceVertexes.size());
+		normalsOutput.clear();
 
 		for (int j = 0; j < m_SurfaceVertexes.size(); j++)
 		{
@@ -89,10 +91,14 @@ namespace test
 					builder.Add(vertices[i], j);
 					builder.Add(vertices[i + pointsCountInRowOrColumn], j);
 					builder.Add(vertices[i + 1], j);
+					std::tuple<glm::vec3, glm::vec3> normal1 = GetNormal(vertices[i + pointsCountInRowOrColumn], vertices[i], vertices[i + 1]);
+					normalsOutput.push_back(normal1);
 
 					builder.Add(vertices[i + 1], j);
 					builder.Add(vertices[i + pointsCountInRowOrColumn], j);
-					builder.Add(vertices[i + pointsCountInRowOrColumn + 1], j);
+					builder.Add(vertices[i + pointsCountInRowOrColumn + 1], j); // center
+					std::tuple<glm::vec3, glm::vec3> normal2 = GetNormal(vertices[i + 1], vertices[i + pointsCountInRowOrColumn + 1], vertices[i + pointsCountInRowOrColumn]);
+					normalsOutput.push_back(normal2);
 				}
 			}
 		}
@@ -104,6 +110,7 @@ namespace test
 
 		return renderData;
 	}
+
 
 	Vertex BezierSurface::Bezier5(const Vertex& p0, const Vertex& p1, const Vertex& p2, const Vertex& p3,
 	                              const Vertex& p4, float t)
@@ -123,5 +130,18 @@ namespace test
 		float y = std::pow(1 - t, 2) * p0.y + 2 * (1 - t) * t * p1.y + std::pow(t, 2) * p2.y;
 		float z = std::pow(1 - t, 2) * p0.z + 2 * (1 - t) * t * p1.z + std::pow(t, 2) * p2.z;
 		return Vertex{x, y, z};
+	}
+
+	std::tuple<glm::vec3, glm::vec3> BezierSurface::GetNormal(const Vertex& v1, const Vertex& v2, const Vertex& v3)
+	{
+		glm::vec3 start = v2.GetPosition();
+		glm::vec3 dir1 = v1.GetPosition() - start;
+		glm::vec3 dir2 = v3.GetPosition() - start;
+
+		glm::vec3 cross = glm::cross(dir1, dir2);
+		int length = cross.length();
+		glm::vec3 end = (cross * 5.0f) + start;
+
+		return std::make_tuple(start, end);
 	}
 }

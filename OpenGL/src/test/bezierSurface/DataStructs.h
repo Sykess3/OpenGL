@@ -7,6 +7,7 @@
 #include "Constant.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
+#include "glm/vec3.hpp"
 
 namespace test
 {
@@ -68,6 +69,11 @@ namespace test
 		{
 			return !(other == *this);
 		}
+
+		glm::vec3 GetPosition() const
+		{
+			return {x, y, z};
+		}
 	};
 
 	struct Portion
@@ -82,10 +88,12 @@ namespace test
 
 	struct RenderData
 	{
-		RenderData(std::unique_ptr<IndexBuffer> ibo, std::unique_ptr<VertexArray> vao, std::unique_ptr<VertexBuffer> vbo)
-			:IBO(std::move(ibo)), VAO(std::move(vao)), VBO(std::move(vbo))
+		RenderData(std::unique_ptr<IndexBuffer> ibo, std::unique_ptr<VertexArray> vao,
+		           std::unique_ptr<VertexBuffer> vbo)
+			: IBO(std::move(ibo)), VAO(std::move(vao)), VBO(std::move(vbo))
 		{
 		}
+
 		std::unique_ptr<IndexBuffer> IBO;
 		std::unique_ptr<VertexArray> VAO;
 		std::unique_ptr<VertexBuffer> VBO;
