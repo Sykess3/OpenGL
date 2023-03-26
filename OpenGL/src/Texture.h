@@ -17,6 +17,11 @@ public:
 	Texture(const std::string& filePath);
 	~Texture();
 
+	Texture(const Texture& other);
+	Texture(Texture&& other);
+	Texture& operator=(const Texture& other);
+	Texture& operator=(Texture&& other);
+
 	void Bind(unsigned int slot) const;
 	void Unbind() const;
 

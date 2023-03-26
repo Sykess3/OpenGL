@@ -32,12 +32,6 @@ namespace test
 	{
 		if(m_UVStep != m_LastGeneratedStep)
 		{
-			VertexBuffer* vbo = m_VBO.release();
-			delete vbo;
-
-			VertexArray* vao = m_VAO.release();
-			delete vao;
-
 			InitializeRenderData();
 		}
 	}
@@ -54,7 +48,7 @@ namespace test
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 
-			renderer.Draw(*m_Shader, *m_VAO, m_VertexCount);
+			renderer.Draw(*m_Shader, *std::move(m_RenderData->IBO), *std::move(m_RenderData->VAO));
 		}
 	}
 	void Test3DSurfaceBasedOnBezierCurves::OnImGuiRender()
@@ -62,16 +56,11 @@ namespace test
 		ImGui::SliderFloat3("Rotation Axis", &m_RotationAxis.x, -1, 1);
 		ImGui::SliderFloat("Rotation Value", &m_RotationValue, -180, 180);
 		ImGui::SliderFloat("Step", &m_UVStep, 0.01, 0.1);
-		ImGui::Text("Surface Vertexes Count %d", m_VertexCount);
 	}
 
 	void Test3DSurfaceBasedOnBezierCurves::InitializeRenderData()
 	{
-		auto [vbo,vao, vertexCount] = m_BezierSurface.GetRenderData(m_Portions, m_UVStep);
-
-		m_VBO = std::move(vbo);
-		m_VAO = std::move(vao);
-		m_VertexCount = vertexCount;
+		m_RenderData = m_BezierSurface.GetRenderData(m_Portions, m_UVStep);
 
 		m_LastGeneratedStep = m_UVStep;
 	}
@@ -79,28 +68,52 @@ namespace test
 	void Test3DSurfaceBasedOnBezierCurves::InitializePortion()
 	{
 		{
-			std::array<Vertex, 5> cp1;
-			std::array<Vertex, 5> cp2;
-			std::array<Vertex, 5> cp3;
+			std::array<Vertex, 5> cp1{};
+			std::array<Vertex, 5> cp2{};
+			std::array<Vertex, 5> cp3{};
 
-			cp1[0] = { 0.8f, 0, 0.7f };
-			cp1[1] = { 0.4f, 0.6f, 0.7f };
+			cp1[0] = { 0.5f, 0, 0.7f };
+			cp1[1] = { 0.5, 0.6f, 0.7f };
 			cp1[2] = { 0, 0.6f, 0.7f };
-			cp1[3] = { -0.4f, 0.6f, 0.7f };
-			cp1[4] = { -0.8f, 0, 0.7f };
+			cp1[3] = { -0.5, 0.6f, 0.7f };
+			cp1[4] = { -0.5f, 0, 0.7f };
 
-			cp2[0] = { 0.8f, 0, 0.0f };
-			cp2[1] = { 0.4f, 0.6f, 0.0f };
+			cp2[0] = { 0.5f, 0, 0.0f };
+			cp2[1] = { 0.5, 0.6f, 0.0f };
 			cp2[2] = { 0, 0.6f, 0.0f };
-			cp2[3] = { -0.4f, 0.6f, 0.0f };
-			cp2[4] = { -0.8f, 0, 0.0f };
+			cp2[3] = { -0.5, 0.6f, 0.0f };
+			cp2[4] = { -0.5f, 0, 0.0f };
 
-			cp3[0] = { 0.8f, 0, -0.7f };
-			cp3[1] = { 0.4f, 0.6f, -0.7f };
+			cp3[0] = { 0.5f, 0, -0.7f };
+			cp3[1] = { 0.5, 0.6f, -0.7f };
 			cp3[2] = { 0, 0.6f, -0.7f };
-			cp3[3] = { -0.4f, 0.6f, -0.7f };
-			cp3[4] = { -0.8f, 0, -0.7f };
+			cp3[3] = { -0.5, 0.6f, -0.7f };
+			cp3[4] = { -0.5f, 0, -0.7f };
 			m_Portions.push_back({ cp1, cp2, cp3 });
 		}
+		/*{
+			std::array<Vertex, 5> cp1{};
+			std::array<Vertex, 5> cp2{};
+			std::array<Vertex, 5> cp3{};
+
+			cp1[0] = { 0.5f, 0, 0.7f };
+			cp1[1] = { 0.4f, -0.6f, 0.7f };
+			cp1[2] = { 0, -0.6f, 0.7f };
+			cp1[3] = { -0.5, -0.6f, 0.7f };
+			cp1[4] = { -0.5f, 0, 0.7f };
+
+			cp2[0] = { 0.5f, 0, 0.0f };
+			cp2[1] = { 0.5, -0.6f, 0.0f };
+			cp2[2] = { 0, -0.6f, 0.0f };
+			cp2[3] = { -0.5, -0.6f, 0.0f };
+			cp2[4] = { -0.5f, 0, 0.0f };
+
+			cp3[0] = { 0.5f, 0, -0.7f };
+			cp3[1] = { 0.5, -0.6f, -0.7f };
+			cp3[2] = { 0, -0.6f, -0.7f };
+			cp3[3] = { -0.5, -0.6f, -0.7f };
+			cp3[4] = { -0.5f, 0, -0.7f };
+			m_Portions.push_back({ cp1, cp2, cp3 });
+		}*/
 	}
 }

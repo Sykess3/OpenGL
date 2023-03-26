@@ -11,6 +11,11 @@ public:
 	VertexArray();
 	~VertexArray();
 
+	VertexArray(const VertexArray& other);
+	VertexArray(VertexArray&& other);
+	VertexArray& operator=(const VertexArray& other);
+	VertexArray& operator=(VertexArray&& other);
+
 	void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
 	void Bind() const;

@@ -20,6 +20,11 @@ public:
 	Shader(const std::string& path);
 	~Shader();
 
+	Shader(const Shader& other);
+	Shader(Shader&& other);
+	Shader& operator=(const Shader& other);
+	Shader& operator=(Shader&& other);
+
 	void Bind() const;
 	void Unbind() const;
 

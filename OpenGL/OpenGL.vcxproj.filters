@@ -81,6 +81,9 @@
     <ClCompile Include="src\test\bezierSurface\BezierSurface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\test\bezierSurface\RenderDataBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Basic.shader" />
@@ -1414,6 +1417,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\test\bezierSurface\BezierSurface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\test\bezierSurface\RenderDataBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
