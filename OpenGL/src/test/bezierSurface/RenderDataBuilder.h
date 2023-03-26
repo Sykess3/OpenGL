@@ -17,7 +17,7 @@ namespace test
 		void Add(const Vertex& vertex, int surface);
 		void Clear();
 
-		std::unique_ptr<RenderData> Get(const VertexBufferLayout& layout);
+		std::vector<std::shared_ptr<RenderData>> Get(const VertexBufferLayout& layout);
 	private:
 		std::vector<std::vector<int>> m_Indexes;
 		std::vector<std::vector<Vertex>> m_Vertexes;

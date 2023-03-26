@@ -6,10 +6,10 @@
 
 namespace test
 {
-	std::unique_ptr<RenderData> BezierSurface::GetRenderData(const std::vector<Portion>& portions, float uvStep)
+	std::vector<std::shared_ptr<RenderData>> BezierSurface::GetRenderData(const std::vector<Portion>& portions, float uvStep)
 	{
 		GenerateSurfaceVertexes(portions, uvStep);
-		return std::move(GenerateArrayBufferInternal());
+		return GenerateArrayBufferInternal();
 	}
 
 	void BezierSurface::GenerateSurfaceVertexes(const std::vector<Portion>& portions, float uvStep)
@@ -72,7 +72,7 @@ namespace test
 		}
 	}
 
-	std::unique_ptr<RenderData> BezierSurface::GenerateArrayBufferInternal()
+	std::vector<std::shared_ptr<RenderData>> BezierSurface::GenerateArrayBufferInternal()
 	{
 		//int pointsCountInRowOrColumn = sqrt(m_SurfaceVertexes.size() / portionsCount);
 		RenderDataBuilder builder(m_SurfaceVertexes.size());
@@ -99,10 +99,10 @@ namespace test
 
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
-		std::unique_ptr<RenderData> renderData = builder.Get(layout);
+		std::vector<std::shared_ptr<RenderData>> renderData = builder.Get(layout);
 
 
-		return std::move(renderData);
+		return renderData;
 	}
 
 	Vertex BezierSurface::Bezier5(const Vertex& p0, const Vertex& p1, const Vertex& p2, const Vertex& p3,

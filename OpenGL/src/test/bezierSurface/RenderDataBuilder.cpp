@@ -40,24 +40,28 @@ namespace test
 		m_Indexes.clear();
 	}
 
-	std::unique_ptr<RenderData> RenderDataBuilder::Get(
+	std::vector<std::shared_ptr<RenderData>> RenderDataBuilder::Get(
 		const VertexBufferLayout& layout)
 	{
-		auto vao = std::make_unique<VertexArray>();
-		std::vector<Vertex>& vertices = m_Vertexes[0];
+		std::vector<std::shared_ptr<RenderData>> result;
+		for (int i = 0; i < m_Indexes.size(); i++)
+		{
+			auto vao = std::make_unique<VertexArray>();
+			std::vector<Vertex>& vertices = m_Vertexes[i];
 
-		auto vertex = vertices.data();
-		size_t i1 = vertices.size() * sizeof(Vertex);
+			auto vertex = vertices.data();
+			size_t i1 = vertices.size() * sizeof(Vertex);
 
-		auto vbo = std::make_unique<VertexBuffer>(vertex, i1);
-		vao->AddBuffer(*vbo, layout);
+			auto vbo = std::make_unique<VertexBuffer>(vertex, i1);
+			vao->AddBuffer(*vbo, layout);
 
-		std::vector<int>& m_index = m_Indexes[0];
-		int* data = m_index.data();
-		size_t size = m_index.size();
+			std::vector<int>& m_index = m_Indexes[i];
+			int* data = m_index.data();
+			size_t size = m_index.size();
 
-		auto ibo = std::make_unique<IndexBuffer>(data, size);
-		std::unique_ptr<RenderData> result = std::make_unique<RenderData>(std::move(ibo), std::move(vao), std::move(vbo));
+			auto ibo = std::make_unique<IndexBuffer>(data, size);
+			result.emplace_back(std::make_shared<RenderData>(std::move(ibo), std::move(vao), std::move(vbo)));
+		}
 
 		return result;
 	}

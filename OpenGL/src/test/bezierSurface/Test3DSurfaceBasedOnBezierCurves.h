@@ -21,7 +21,7 @@ namespace test
 
 		std::vector<Portion> m_Portions;
 
-		std::unique_ptr<RenderData> m_RenderData;
+		std::vector<std::shared_ptr<RenderData>> m_RenderData;
 		std::unique_ptr<Shader> m_Shader;
 
 	public:

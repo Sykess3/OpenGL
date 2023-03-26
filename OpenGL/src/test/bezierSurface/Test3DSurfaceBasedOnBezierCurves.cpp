@@ -12,8 +12,8 @@ namespace test
 		: m_UVStep(0.1f),
 		m_Proj(glm::perspective(glm::radians(45.0f), (float)Constant::Width / (float)Constant::Height, 0.1f, 100.0f)),
 		m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, -3))),
-		m_RotationAxis(0.0f, 0.1f, 0.0f),
-		m_RotationValue(0),
+		m_RotationAxis(0.0f, 1.0f, 0.0f),
+		m_RotationValue(90),
 		m_Portions(0)
 	{
 		GlCall(glEnable(GL_BLEND));
@@ -48,7 +48,10 @@ namespace test
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
 
-			renderer.Draw(*m_Shader, *std::move(m_RenderData->IBO), *std::move(m_RenderData->VAO));
+			for(auto renderData : m_RenderData)
+			{
+				renderer.Draw(*m_Shader, *std::move(renderData->IBO), *std::move(renderData->VAO));
+			}
 		}
 	}
 	void Test3DSurfaceBasedOnBezierCurves::OnImGuiRender()
@@ -72,35 +75,35 @@ namespace test
 			std::array<Vertex, 5> cp2{};
 			std::array<Vertex, 5> cp3{};
 
-			cp1[0] = { 0.5f, 0, 0.7f };
-			cp1[1] = { 0.5, 0.6f, 0.7f };
-			cp1[2] = { 0, 0.6f, 0.7f };
-			cp1[3] = { -0.5, 0.6f, 0.7f };
-			cp1[4] = { -0.5f, 0, 0.7f };
+			cp1[0] = { 0.3f, -0.4f, 0.7f };
+			cp1[1] = { 0.3, 0.6f, -0.4f };
+			cp1[2] = { 0, 0.6f,-0.4f };
+			cp1[3] = { -0.3, 0.6f, -0.4f };
+			cp1[4] = { -0.3f, -0.4f, 0.7f };
 
-			cp2[0] = { 0.5f, 0, 0.0f };
-			cp2[1] = { 0.5, 0.6f, 0.0f };
-			cp2[2] = { 0, 0.6f, 0.0f };
-			cp2[3] = { -0.5, 0.6f, 0.0f };
-			cp2[4] = { -0.5f, 0, 0.0f };
+			cp2[0] = { 0.5f, 0, -0.0f };
+			cp2[1] = { 0.5, 0.6f, -0.4f };
+			cp2[2] = { 0, 0.6f, -0.4f };
+			cp2[3] = { -0.5, 0.6f, -0.4f };
+			cp2[4] = { -0.5f, 0, -0.0f };
 
-			cp3[0] = { 0.5f, 0, -0.7f };
-			cp3[1] = { 0.5, 0.6f, -0.7f };
-			cp3[2] = { 0, 0.6f, -0.7f };
-			cp3[3] = { -0.5, 0.6f, -0.7f };
-			cp3[4] = { -0.5f, 0, -0.7f };
+			cp3[0] = { 0.3f, -0.0f, -0.7f };
+			cp3[1] = { 0.3f, 0.4f, -0.7f };
+			cp3[2] = { -0.0f, 0.4f, -0.7f };
+			cp3[3] = { -0.3f, 0.4f, -0.7f };
+			cp3[4] = { -0.3f, -0.0f, -0.7f };
 			m_Portions.push_back({ cp1, cp2, cp3 });
 		}
-		/*{
+		{
 			std::array<Vertex, 5> cp1{};
 			std::array<Vertex, 5> cp2{};
 			std::array<Vertex, 5> cp3{};
 
-			cp1[0] = { 0.5f, 0, 0.7f };
-			cp1[1] = { 0.4f, -0.6f, 0.7f };
+			cp1[0] = { 0.3f, -0.4f, 0.7f };
+			cp1[1] = { 0.3f, -0.6f, 0.7f };
 			cp1[2] = { 0, -0.6f, 0.7f };
-			cp1[3] = { -0.5, -0.6f, 0.7f };
-			cp1[4] = { -0.5f, 0, 0.7f };
+			cp1[3] = { -0.3, -0.6f, 0.7f };
+			cp1[4] = { -0.3f, -0.4f, 0.7f };
 
 			cp2[0] = { 0.5f, 0, 0.0f };
 			cp2[1] = { 0.5, -0.6f, 0.0f };
@@ -108,12 +111,13 @@ namespace test
 			cp2[3] = { -0.5, -0.6f, 0.0f };
 			cp2[4] = { -0.5f, 0, 0.0f };
 
-			cp3[0] = { 0.5f, 0, -0.7f };
-			cp3[1] = { 0.5, -0.6f, -0.7f };
-			cp3[2] = { 0, -0.6f, -0.7f };
-			cp3[3] = { -0.5, -0.6f, -0.7f };
-			cp3[4] = { -0.5f, 0, -0.7f };
+			cp3[0] = { 0.3f, 0.0f, -0.7f };
+			cp3[1] = { 0.3f, -0.4f, -0.7f };
+			cp3[2] = { -0.0f, -0.4f, -0.7f };
+			cp3[3] = { -0.3f, -0.4f, -0.7f };
+			cp3[4] = { -0.3f, 0.0f, -0.7f };
 			m_Portions.push_back({ cp1, cp2, cp3 });
-		}*/
+		}
+
 	}
 }
