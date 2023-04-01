@@ -609,6 +609,7 @@
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Сamera.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Test.png" />

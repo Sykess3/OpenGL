@@ -4,6 +4,7 @@
 #include "LineRenderer.h"
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
+#include "Ñamera.h"
 #include "imgui/imgui.h"
 
 namespace test
@@ -47,7 +48,11 @@ namespace test
 			model = glm::rotate(model, glm::radians(m_RotationValue), m_RotationAxis);
 			model = glm::translate(model, m_Translate);
 
-			glm::mat4 mvp = m_Proj * m_View * model;
+			glm::mat4 view = Camera::GetInstance()->GetViewMatrix();
+			glm::mat4 projection = glm::perspective(glm::radians(Camera::GetInstance()->Zoom),
+			                                        (float)Constant::Width / (float)Constant::Height, 0.1f, 100.0f);
+
+			glm::mat4 mvp = projection * view * model;
 			m_Shader->SetUniform4f("u_Color", 1.0f, 0.0f, 0.0f, 1.0f);
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);

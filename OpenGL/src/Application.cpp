@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include "VertexBufferLayout.h"
 #include "Constant.h"
+#include "Ñamera.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -13,6 +14,13 @@
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
 
+void ProcessInput(GLFWwindow* window);
+void Scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void Mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+void FramebufferSize_callback(GLFWwindow* window, int width, int height);
+
+bool CursorIsDisabled;
+
 
 int main(void)
 {
@@ -20,6 +28,7 @@ int main(void)
     /* Initialize the library */
     if (!glfwInit())
         return -1;
+
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -35,12 +44,16 @@ int main(void)
 
     /* Make the window's context current */
 	glfwMakeContextCurrent(window);
+    glfwSetCursorPosCallback(window, Mouse_callback);
+    glfwSetScrollCallback(window, Scroll_callback);
+    glfwSetFramebufferSizeCallback(window, FramebufferSize_callback);
 
     glfwSwapInterval(1);
 
     if (glewInit() != GLEW_OK)
         std::cout << "Error" << std::endl;
 
+    //-IMGUI--------------------------------------------
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -49,6 +62,7 @@ int main(void)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     const char* glsl_version = "#version 330";
     ImGui_ImplOpenGL3_Init(glsl_version);
+    /////////////////////////////////////////////////////////
 
     GlCall(glEnable(GL_BLEND));
     GlCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
@@ -66,6 +80,12 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        Camera::deltaTime = currentFrame - Camera::lastFrame;
+        Camera::lastFrame = currentFrame;
+
+        ProcessInput(window);
+
         glClearColor(0, 0, 0, 1);
         renderer.Clear();
 
@@ -106,5 +126,68 @@ int main(void)
 
     glfwTerminate();
     return 0;
+}
+
+void ProcessInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        Camera::GetInstance()->ProcessKeyboard(FORWARD, Camera::deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        Camera::GetInstance()->ProcessKeyboard(BACKWARD, Camera::deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        Camera::GetInstance()->ProcessKeyboard(LEFT, Camera::deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        Camera::GetInstance()->ProcessKeyboard(RIGHT, Camera::deltaTime);
+
+    if (glfwGetKey(window, GLFW_KEY_CAPS_LOCK) == GLFW_RELEASE)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+    else
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+        Camera::GetInstance()->ProcessMouseScroll(0);
+    }
+}
+
+// -------------------------------------------------------
+void Mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (Camera::firstMouse)
+    {
+	    Camera::lastX = xpos;
+	    Camera::lastY = ypos;
+	    Camera::firstMouse = false;
+    }
+
+    float xoffset = xpos - Camera::lastX;
+    float yoffset = Camera::lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    Camera::lastX = xpos;
+    Camera::lastY = ypos;
+
+
+    Camera::GetInstance()->ProcessMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void Scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    Camera::GetInstance()->ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
+void FramebufferSize_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
 }
 
