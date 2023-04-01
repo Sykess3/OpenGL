@@ -88,22 +88,27 @@ namespace test
 				unsigned isNotLastElementInRow = ((i + 1) % pointsCountInRowOrColumn) != 0;
 				if (isNotLastElementInRow)
 				{
+					std::tuple<glm::vec3, glm::vec3> normal1 = GetNormal(vertices[i + pointsCountInRowOrColumn], vertices[i], vertices[i + 1]);
+					normalsOutput.push_back(normal1);
+					vertices[i].SetNormal(std::get<1>(normal1) - std::get<0>(normal1));
 					builder.Add(vertices[i], j);
 					builder.Add(vertices[i + pointsCountInRowOrColumn], j);
 					builder.Add(vertices[i + 1], j);
-					std::tuple<glm::vec3, glm::vec3> normal1 = GetNormal(vertices[i + pointsCountInRowOrColumn], vertices[i], vertices[i + 1]);
-					normalsOutput.push_back(normal1);
 
+
+					std::tuple<glm::vec3, glm::vec3> normal2 = GetNormal(vertices[i + 1], vertices[i + pointsCountInRowOrColumn + 1], vertices[i + pointsCountInRowOrColumn]);
+					normalsOutput.push_back(normal2);
+					vertices[i + pointsCountInRowOrColumn + 1]
+						.SetNormal(std::get<1>(normal2) - std::get<0>(normal2));
 					builder.Add(vertices[i + 1], j);
 					builder.Add(vertices[i + pointsCountInRowOrColumn], j);
 					builder.Add(vertices[i + pointsCountInRowOrColumn + 1], j); // center
-					std::tuple<glm::vec3, glm::vec3> normal2 = GetNormal(vertices[i + 1], vertices[i + pointsCountInRowOrColumn + 1], vertices[i + pointsCountInRowOrColumn]);
-					normalsOutput.push_back(normal2);
 				}
 			}
 		}
 
 		VertexBufferLayout layout;
+		layout.Push<float>(3);
 		layout.Push<float>(3);
 		std::vector<std::shared_ptr<RenderData>> renderData = builder.Get(layout);
 

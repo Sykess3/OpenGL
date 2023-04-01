@@ -13,6 +13,7 @@
 #include "test/Test3DCube.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"
+#include "test/bezierSurface/lab2/Lab2.h"
 
 void ProcessInput(GLFWwindow* window);
 void Scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
@@ -44,6 +45,7 @@ int main(void)
 
     /* Make the window's context current */
 	glfwMakeContextCurrent(window);
+
     glfwSetCursorPosCallback(window, Mouse_callback);
     glfwSetScrollCallback(window, Scroll_callback);
     glfwSetFramebufferSizeCallback(window, FramebufferSize_callback);
@@ -76,16 +78,19 @@ int main(void)
     testMenu->RegisterTest<test::TestClearColor>("Clear Color");
     testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
     testMenu->RegisterTest<test::Test3DCube>("3d Cube");
-    testMenu->RegisterTest<test::Test3DSurfaceBasedOnBezierCurves>("LAB1");
+    //testMenu->RegisterTest<test::Test3DSurfaceBasedOnBezierCurves>("LAB1");
+    testMenu->RegisterTest<test::Lab2>("LAB2");
 
     while (!glfwWindowShouldClose(window))
     {
+        GlCall(glEnable(GL_DEPTH_TEST));
         float currentFrame = static_cast<float>(glfwGetTime());
         Camera::deltaTime = currentFrame - Camera::lastFrame;
         Camera::lastFrame = currentFrame;
 
         ProcessInput(window);
 
+        //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0, 0, 0, 1);
         renderer.Clear();
 
@@ -149,7 +154,7 @@ void ProcessInput(GLFWwindow* window)
     else
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 3.0f));
+        Camera::GetInstance()->SetPosition(glm::vec3(0.0f, 0.0f, 6.0f));
         Camera::GetInstance()->ProcessMouseScroll(0);
     }
 }

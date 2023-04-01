@@ -1,0 +1,43 @@
+#pragma once
+#include "test/bezierSurface/DataStructs.h"
+#include "memory"
+#include "Shader.h"
+#include "test/bezierSurface/BezierSurface.h"
+#include "test/Test.h"
+
+namespace test
+{
+
+	class Lab2 : public Test
+	{
+	private:
+		float m_UVStep;
+		glm::mat4 m_Proj, m_View;
+		glm::vec3 m_RotationAxis;
+		glm::vec3 m_Translate;
+		glm::vec3 m_Scale;
+		float m_RotationValue;
+		float m_LastGeneratedStep;
+
+		BezierSurface m_BezierSurface;
+
+		std::vector<Portion> m_Portions;
+
+		std::vector<std::shared_ptr<RenderData>> m_RenderData;
+		std::vector<std::tuple<glm::vec3, glm::vec3>> m_Normals;
+		std::unique_ptr<Shader> m_SurfaceShader;
+		std::unique_ptr<Shader> m_LightObjectShader;
+
+	public:
+		Lab2();
+
+		void OnUpdate(float deltaTime) override;
+		void OnRender() override;
+		void OnImGuiRender() override;
+
+	private:
+		void InitializePortion();
+		void InitializeRenderData();
+	};
+
+}

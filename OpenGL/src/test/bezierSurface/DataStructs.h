@@ -14,24 +14,30 @@ namespace test
 	struct Vertex
 	{
 		float x, y, z;
+		float nX, nY, nZ;
 
 		Vertex() noexcept
-			: x(0), y(0), z(0)
+			: x(0), y(0), z(0), nX(0), nY(0), nZ(0)
 		{
 		}
 
 		Vertex(float x, float y, float z) noexcept
-			: x(x), y(y), z(z)
+			: x(x), y(y), z(z), nX(0), nY(0), nZ(0)
+		{
+		}
+
+		Vertex(float x, float y, float z, float nX, float nY, float nZ) noexcept
+			: x(x), y(y), z(z), nX(nX), nY(nY), nZ(nZ)
 		{
 		}
 
 		Vertex(const Vertex& other) noexcept
-			: x(other.x), y(other.y), z(other.z)
+			: x(other.x), y(other.y), z(other.z), nX(other.nX), nY(other.nY), nZ(other.nZ)
 		{
 		}
 
 		Vertex(Vertex&& other) noexcept
-			: x(other.x), y(other.y), z(other.z)
+			: x(other.x), y(other.y), z(other.z), nX(other.nX), nY(other.nY), nZ(other.nZ)
 		{
 			other.x = 0;
 			other.y = 0;
@@ -45,6 +51,9 @@ namespace test
 				x = other.x;
 				y = other.y;
 				z = other.z;
+				nX = other.nX;
+				nY = other.nY;
+				nZ = other.nZ;
 			}
 			return *this;
 		}
@@ -54,6 +63,9 @@ namespace test
 			x = other.x;
 			y = other.y;
 			z = other.z;
+			nX = other.nX;
+			nY = other.nY;
+			nZ = other.nZ;
 
 			return *this;
 		}
@@ -73,6 +85,19 @@ namespace test
 		glm::vec3 GetPosition() const
 		{
 			return {x, y, z};
+		}
+
+		glm::vec3 GetNormal() const
+		{
+			return {nX, nY, nZ};
+		}
+
+
+		void SetNormal(const glm::vec3& vec) 
+		{
+			nX = vec.x;
+			nY = vec.y;
+			nZ = vec.z;
 		}
 	};
 
