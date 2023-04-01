@@ -1,7 +1,8 @@
 #include "Test3DSurfaceBasedOnBezierCurves.h"
 
 #include "Constant.h"
-#include "LineRenderer.h"
+#include "test/bezierSurface/DataStructs.h"
+#include "test/bezierSurface/LineRenderer.h"
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
 #include "Ñamera.h"

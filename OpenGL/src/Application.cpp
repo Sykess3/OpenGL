@@ -9,7 +9,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-#include "test/bezierSurface/Test3DSurfaceBasedOnBezierCurves.h"
+#include "test/bezierSurface/lab1/Test3DSurfaceBasedOnBezierCurves.h"
 #include "test/Test3DCube.h"
 #include "test/TestClearColor.h"
 #include "test/TestTexture2D.h"

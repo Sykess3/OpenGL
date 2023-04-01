@@ -1,8 +1,8 @@
 #pragma once
-#include "DataStructs.h"
+#include "test/bezierSurface/DataStructs.h"
 #include "memory"
 #include "Shader.h"
-#include "BezierSurface.h"
+#include "test/bezierSurface/BezierSurface.h"
 #include "test/Test.h"
 
 namespace test
